@@ -1,0 +1,21 @@
+<!-- templates/chore_form.html -->
+{% extends "base.html" %}
+
+{% block title %}{% if chore %}Edit Chore{% else %}Create Chore{% endif %} | My Website{% endblock %}
+
+{% block content %}
+    <h1>{% if chore %}Edit Chore{% else %}Create a New Chore{% endif %}</h1>
+
+    <form action="{{ url_for('edit_chore', id=chore.id if chore else None) }}" method="POST">
+        <label for="name">Chore Name</label>
+        <input type="text" id="name" name="name" value="{{ chore.name if chore else '' }}" required>
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" required>{{ chore.description if chore else '' }}</textarea>
+
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" value="{{ chore.category if chore else '' }}" required>
+
+        <button type="submit">{% if chore %}Update{% else %}Create{% endif %} Chore</button>
+    </form>
+{% endblock %}
