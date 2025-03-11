@@ -1,10 +1,12 @@
 <!-- templates/base.html -->
+{% import 'chores_dropdown.html' as dropdown %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}My Website{% endblock %}</title>
+    <title>{% block title %}the war against chores{% endblock %}</title>
 </head>
 <body>
     <!-- Navbar at the top of the page -->
@@ -14,6 +16,7 @@
             <li><a href="{{ url_for('week') }}">Week</a></li>
             <li><a href="{{ url_for('chores') }}">Chores</a></li>
         </ul>
+        {{ dropdown.render_chores_select(chores) }}
     </nav>
 
     <!-- The page-specific content will be inserted here -->

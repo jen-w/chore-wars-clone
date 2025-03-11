@@ -1,21 +1,35 @@
 <!-- templates/claim_form.html -->
 {% extends "base.html" %}
 
-{% block title %}{% if claim %}Edit Claim{% else %}Create Claim{% endif %} | My Website{% endblock %}
+{% block title %}edit claim{% endblock %}
 
 {% block content %}
-    <h1>{% if claim %}Edit Claim{% else %}Create a New Claim{% endif %}</h1>
+    <div>
+        {% if success %}claim successfully created, edit it below if you so desire{% endif %}
+    </div>
+    
+    <h1>Edit Claim</h1>
 
-    <form action="{{ url_for('edit_claim', id=claim.id if claim else None) }}" method="POST">
-        <label for="chore_id">Chore ID</label>
-        <input type="number" id="chore_id" name="chore_id" value="{{ claim.chore_id if claim else '' }}" required>
+    <form action="{{ url_for('edit_claim', id=claim.id) }}" method="POST">
+
+        <select name="chore_id">
+            {% for chore in chores %}
+                <option value="{{ chore.id }}" 
+                        {% if chore.id == claim.chore_id %} selected {% endif %}>
+                    {{ chore.name }} - {{ chore.value }} rmb
+                </option>
+            {% endfor %}
+        </select>
+        
+        <label for="value">Value</label>
+        <input type="number" id="value" name="value" value="{{ claim.value }}" required>
 
         <label for="completed_by">Completed By</label>
-        <input type="text" id="completed_by" name="completed_by" value="{{ claim.completed_by if claim else '' }}" required>
+        <input type="text" id="completed_by" name="completed_by" value="{{ claim.completed_by }}" required>
 
-        <label for="note">Note</label>
-        <textarea id="note" name="note" required>{{ claim.note if claim else '' }}</textarea>
+        <label for="note">Note (optional)</label>
+        <textarea id="note" name="note">{{ claim.note }}</textarea>
 
-        <button type="submit">{% if claim %}Update{% else %}Create{% endif %} Claim</button>
+        <button type="submit">Update Claim</button>
     </form>
 {% endblock %}
