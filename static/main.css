@@ -20,6 +20,10 @@ table {
     margin-top: 1vh;
 }
 
+th {
+    text-align: left;
+}
+
 nav {
     display: flex;
     justify-content: space-between;

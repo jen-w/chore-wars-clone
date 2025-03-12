@@ -38,6 +38,7 @@ def index():
 # Chore config page
 @app.route('/chores')
 def chores():
+    flash("access denied: bad bitches only", "error")
     return render_template('chores.html', chores=fetch_chores())
 
 # New claim api
@@ -62,7 +63,7 @@ def create_claim():
 
     # Redirect to the edit page after creation
     flash("claim successfully created, edit it below if you so desire", "success")
-    return redirect(url_for('edit_claim', id=new_claim.id, message="claim created successfully"))
+    return redirect(url_for('edit_claim', id=new_claim.id))
 
 # Edit claim page and api
 @app.route('/claim/edit/<int:id>', methods=['GET', 'POST'])
@@ -84,11 +85,12 @@ def edit_claim(id):
             claim.note = request.form['note']
             claim.updated_at = datetime.utcnow()
             flash("edit saved successfully", "success")
+
         db.session.commit()
         return redirect(url_for('index'))
 
     return render_template(
-        'claim_form.html', 
+        'edit_claim.html', 
         claim=claim, 
         chores=fetch_chores(),
         completed_at_min=(datetime.utcnow() - timedelta(days=7)).strftime('%Y-%m-%d'),
@@ -99,21 +101,19 @@ def edit_claim(id):
 @app.route('/chore/create', methods=['GET', 'POST'])
 def create_chore():
     if request.method == 'POST':
-        # Get data from form submission
         value = request.form['value']
         name = request.form['name']
         description = request.form['description']
         category = request.form['category']
 
-        # Create a new chore
         new_chore = Chore(value=value, name=name, description=description, category=category)
         db.session.add(new_chore)
         db.session.commit()
 
         flash("chore created successfully", "success")
-        return redirect(url_for('chores'))  # Redirect to the chores page after creation
+        return redirect(url_for('chores'))
 
-    return render_template('chore_form.html', chores=fetch_chores())
+    return render_template('edit_chore.html', chores=fetch_chores())
 
 # Edit chore page and api
 @app.route('/chore/edit/<int:id>', methods=['GET', 'POST'])
@@ -124,6 +124,9 @@ def edit_chore(id):
         return redirect(url_for(create_chore))
     elif request.method == 'POST':
         if request.form.get('delete') == '1':
+            if Claim.query.filter(Claim.chore_id == id).first() is not None:
+                flash("sorry can't delete this without deleting historic claims", "error")
+                return redirect(url_for('chores'))
             db.session.delete(chore)
             flash("deletion was successful", "success")
         else:
@@ -134,12 +137,12 @@ def edit_chore(id):
             flash("edit saved successfully", "success")
 
         db.session.commit()
-        return redirect(url_for('chores'))  # Redirect to the chores page after editing
+        return redirect(url_for('chores'))
 
-    return render_template('chore_form.html', chore=chore, chores=fetch_chores())
+    return render_template('edit_chore.html', chore=chore, chores=fetch_chores())
 
 def fetch_chores():
-    return Chore.query.all()
+    return Chore.query.order_by(Chore.category).all()
 
 # Create tables
 with app.app_context():
