@@ -1,9 +1,50 @@
-<!-- templates/index.html -->
+<!-- templates/week.html -->
 {% extends "base.html" %}
 
-{% block title %}Home | My Website{% endblock %}
+{% block title %}the war against chores{% endblock %}
 
 {% block content %}
-    <h1>Welcome to the Home Page</h1>
-    <p>This is the landing page of the website.</p>
+    <h1>this week in chores</h1>
+    
+    <div class="winners_circle">    
+        <table>
+            <tbody>
+                {% for user, points in tally.items() %}
+                    <tr>
+                        <td>{{ user }}</td>
+                        <td>{{ points }} rmb</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <span>{{ winner }} is winning at the moment</span>
+    </div>
+    
+    <!-- Table for displaying claims -->
+    <table>
+        <thead>
+            <tr>
+                <th>what</th>
+                <th>when</th>
+                <th>who</th>
+                <th>how much</th>
+                <th>action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for claim in claims %}
+                <tr>
+                    <td>{{ chore_dict[claim.chore_id] }}</td>
+                    <td>{{ claim.completed_at.strftime('%A') }}</td>
+                    <td>{{ claim.completed_by }}</td>
+                    <td>{{ claim.value }} rmb</td>
+                    <td><a href="{{ url_for('edit_claim', id=claim.id) }}">edit</a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">no claims found from the last 7 days.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

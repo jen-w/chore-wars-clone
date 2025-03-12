@@ -7,39 +7,64 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-        monospace;
-}
-
-.App {
-    text-align: center;
-}
-
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
-}
-
-.App-header {
-    background-color: #282c34;
-    min-height: 100vh;
+main {
+    border-top: 1px solid #000;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    font-size: calc(10px + 2vmin);
+    margin: 0 3vw;
+}
+
+table {
+    border: 1px solid #000;
+    margin-top: 1vh;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+nav a {
+    border: 1px solid #000;
+    color: #900;
+    padding: 0px 8px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav form {
+  border: 1px outset #bbbbbb;
+  background-color: #444;
+  padding: 4px;
+}
+
+main form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1vh;
+}
+
+.winners_circle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1vh;
+}
+
+.edit__container {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+}
+
+.edit__container button {
+    height: 5vh;
+}
+
+.edit__button--delete {
     color: white;
-}
-
-.App-link {
-    color: #61dafb;
-}
-
-.heart {
-    color: #ff0000;
-}
-
-.small {
-    font-size: 0.75rem;
+    background-color:rgb(141, 23, 23)
 }
