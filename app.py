@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from models import db, Chore, Claim
 from datetime import datetime, timedelta
-import pytz
+from pytz import timezone
 from collections import defaultdict
 
-pacific_timezone = pytz.timezone('America/Los_Angeles')
+pacific_timezone = timezone('America/Los_Angeles')
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
