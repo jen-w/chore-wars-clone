@@ -9,11 +9,11 @@
     <div class="edit__container">
         <form action="{{ url_for('edit_claim', id=claim.id) }}" method="POST">
 
-            <select name="chore_id">
+            <select name="chore_id" required>
                 {% for chore in chores %}
                     <option value="{{ chore.id }}" 
                             {% if chore.id == claim.chore_id %} selected {% endif %}>
-                        {{ chore.name }}
+                        {{ chore.name }} - {{ chore.value }} patacas
                     </option>
                 {% endfor %}
             </select>
@@ -31,7 +31,14 @@
                    required />
     
             <label for="completed_by">completed by</label>
-            <input type="text" id="completed_by" name="completed_by" value="{{ claim.completed_by }}" required />
+            <select name="completed_by" required>
+                {% for user in users %}
+                    <option value="{{ user }}" 
+                            {% if user == claim.completed_by %} selected {% endif %}>
+                        {{ user }}
+                    </option>
+                {% endfor %}
+            </select>
     
             <label for="note">note (optional)</label>
             <textarea id="note" name="note">{{ claim.note }}</textarea>

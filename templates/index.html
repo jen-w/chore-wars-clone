@@ -12,11 +12,12 @@
                 {% for user, points in tally.items() %}
                     <tr>
                         <td>{{ user }}</td>
-                        <td>{{ points }} rmb</td>
+                        <td>{{ points }} patacas</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+
         <span>{{ winner }} is winning at the moment</span>
     </div>
     
@@ -27,7 +28,7 @@
                 <th>what</th>
                 <th>when</th>
                 <th>who</th>
-                <th>how much</th>
+                <th>patacas</th>
                 <th>action</th>
             </tr>
         </thead>
@@ -35,10 +36,13 @@
             {% for claim in claims %}
                 <tr>
                     <td>{{ chore_dict[claim.chore_id] }}</td>
-                    <td>{{ claim.completed_at.strftime('%A') }}</td>
+                    <td>{{ claim.completed_at.strftime('%a') }}</td>
                     <td>{{ claim.completed_by }}</td>
-                    <td>{{ claim.value }} rmb</td>
-                    <td><a href="{{ url_for('edit_claim', id=claim.id) }}">edit</a></td>
+                    <td>{{ claim.value }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_claim', id=claim.id) }}">edit</a>
+                        {% if claim.note %}*{% endif %}
+                    </td>
                 </tr>
             {% else %}
                 <tr>
@@ -47,4 +51,6 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <div>* click edit to see the note</div>
 {% endblock %}

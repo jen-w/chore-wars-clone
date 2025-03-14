@@ -20,7 +20,16 @@ table {
 }
 
 th {
+    background-color: #fff;
     text-align: left;
+}
+
+tr {
+    height: 2rem;
+}
+
+tr:nth-child(odd) {
+    background-color: #f2f2f2;
 }
 
 nav {

@@ -18,14 +18,16 @@
         </span>
 
         <form action="{{ url_for('create_claim') }}" method="POST" class="claim_box">
-            <select name="chore_id">
+            <select name="chore_id" required>
                 <option value="" disabled selected>select a chore</option>
                 {% for chore in chores %}
-                    <option value="{{ chore.id }}">{{ chore.name }} - {{ chore.value }} rmb</option>
+                    <option value="{{ chore.id }}">{{ chore.name }} - {{ chore.value }} patacas</option>
                 {% endfor %}
             </select>
-            <button name="completed_by" value="jenny" type="submit">jenny</button>
-            <button name="completed_by" value="zep" type="submit">zep</button>
+
+            {% for user in users %}
+                <button name="completed_by" value="{{ user }}" type="submit">{{ user }}</button>
+            {% endfor %}
         </form>
     </nav>
 

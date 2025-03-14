@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from models import db, Chore, Claim
 from datetime import datetime, timedelta
+import pytz
 from collections import defaultdict
 
+pacific_timezone = pytz.timezone('America/Los_Angeles')
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -14,9 +16,14 @@ db.init_app(app)
 @app.route('/')
 def index():
     # Fetch all claims created in the last 7 days
-    seven_days_ago = datetime.utcnow() - timedelta(days=7)
-    recent_claims = Claim.query.filter(Claim.completed_at >= seven_days_ago).order_by(Claim.completed_at.desc()).all()
-    
+    seven_days_ago = datetime.now(pacific_timezone) - timedelta(days=7)
+    recent_claims = (
+        Claim.query
+        .filter(Claim.completed_at >= seven_days_ago)
+        .order_by(Claim.completed_at.desc())
+        .all()
+    )
+
     chores = fetch_chores()
     chore_dict = {chore.id: chore.name for chore in chores}
 
@@ -38,8 +45,7 @@ def index():
 # Chore config page
 @app.route('/chores')
 def chores():
-    flash("access denied: bad bitches only", "error")
-    return render_template('chores.html', chores=fetch_chores())
+    return render_template('chores.html')
 
 # New claim api
 @app.route('/claim/create', methods=['POST'])
@@ -54,7 +60,7 @@ def create_claim():
         chore_id=chore_id,
         value=chore.value,
         created_by="",
-        completed_at=datetime.utcnow(),
+        completed_at=datetime.now(pacific_timezone),
         completed_by=completed_by,
         note=""
     )
@@ -62,7 +68,7 @@ def create_claim():
     db.session.commit()
 
     # Redirect to the edit page after creation
-    flash("claim successfully created, edit it below if you so desire", "success")
+    flash("good job, edit it below if you so desire", "success")
     return redirect(url_for('edit_claim', id=new_claim.id))
 
 # Edit claim page and api
@@ -76,15 +82,17 @@ def edit_claim(id):
     if request.method == 'POST':
         if request.form.get('delete') == '1':
             db.session.delete(claim)
-            flash("deletion was successful", "success")
+            flash("deletion was successful", "info")
         else:
             claim.chore_id = request.form['chore_id']
             claim.value = request.form['value']
             claim.completed_by = request.form['completed_by']
-            claim.completed_at = datetime.strptime(request.form['completed_at'], "%Y-%m-%d")
+            claim.completed_at = datetime.strptime(
+                request.form['completed_at'], "%Y-%m-%d"
+            )
             claim.note = request.form['note']
-            claim.updated_at = datetime.utcnow()
-            flash("edit saved successfully", "success")
+            claim.updated_at = datetime.now(pacific_timezone)
+            flash("edit saved successfully", "info")
 
         db.session.commit()
         return redirect(url_for('index'))
@@ -93,8 +101,10 @@ def edit_claim(id):
         'edit_claim.html', 
         claim=claim, 
         chores=fetch_chores(),
-        completed_at_min=(datetime.utcnow() - timedelta(days=7)).strftime('%Y-%m-%d'),
-        completed_at_max=datetime.utcnow().strftime('%Y-%m-%d')
+        completed_at_min=(
+            datetime.now(pacific_timezone) - timedelta(days=7)
+        ).strftime('%Y-%m-%d'),
+        completed_at_max=datetime.now(pacific_timezone).strftime('%Y-%m-%d')
     )
 
 # New chore page and api
@@ -110,10 +120,10 @@ def create_chore():
         db.session.add(new_chore)
         db.session.commit()
 
-        flash("chore created successfully", "success")
+        flash("chore created successfully", "info")
         return redirect(url_for('chores'))
 
-    return render_template('edit_chore.html', chores=fetch_chores())
+    return render_template('edit_chore.html')
 
 # Edit chore page and api
 @app.route('/chore/edit/<int:id>', methods=['GET', 'POST'])
@@ -128,18 +138,25 @@ def edit_chore(id):
                 flash("sorry can't delete this without deleting historic claims", "error")
                 return redirect(url_for('chores'))
             db.session.delete(chore)
-            flash("deletion was successful", "success")
+            flash("deletion was successful", "info")
         else:
             chore.value = request.form['value']
             chore.name = request.form['name']
             chore.description = request.form['description']
             chore.category = request.form['category']
-            flash("edit saved successfully", "success")
+            flash("edit saved successfully", "info")
 
         db.session.commit()
         return redirect(url_for('chores'))
 
-    return render_template('edit_chore.html', chore=chore, chores=fetch_chores())
+    return render_template('edit_chore.html', chore=chore)
+
+@app.context_processor
+def populate_common_template_data():
+    return {
+        'chores': fetch_chores(),
+        'users': ['jenny', 'zep']
+    }
 
 def fetch_chores():
     return Chore.query.order_by(Chore.category).all()
