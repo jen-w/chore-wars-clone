@@ -19,8 +19,8 @@ def index():
     seven_days_ago = datetime.now(pacific_timezone) - timedelta(days=7)
     recent_claims = (
         Claim.query
-        .filter(Claim.completed_at >= seven_days_ago)
-        .order_by(Claim.completed_at.desc())
+        .filter(Claim.completed_at > seven_days_ago)
+        .order_by(Claim.completed_at.desc(), Claim.created_at.desc())
         .all()
     )
 
@@ -102,7 +102,7 @@ def edit_claim(id):
         claim=claim, 
         chores=fetch_chores(),
         completed_at_min=(
-            datetime.now(pacific_timezone) - timedelta(days=7)
+            datetime.now(pacific_timezone) - timedelta(days=6)
         ).strftime('%Y-%m-%d'),
         completed_at_max=datetime.now(pacific_timezone).strftime('%Y-%m-%d')
     )
@@ -159,7 +159,7 @@ def populate_common_template_data():
     }
 
 def fetch_chores():
-    return Chore.query.order_by(Chore.category).all()
+    return Chore.query.order_by(Chore.name).all()
 
 # Create tables
 with app.app_context():

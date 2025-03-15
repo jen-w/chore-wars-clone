@@ -32,6 +32,18 @@ tr:nth-child(odd) {
     background-color: #f2f2f2;
 }
 
+button {
+    height: 2rem;
+}
+
+select {
+    height: 2rem;
+}
+
+input {
+    height: 2rem;
+}
+
 nav {
     display: flex;
     justify-content: space-between;
@@ -71,10 +83,6 @@ main form {
     display: flex;
     flex-direction: column;
     gap: 1vh;
-}
-
-.edit__container button {
-    height: 5vh;
 }
 
 .edit__button--delete {
