@@ -16,7 +16,7 @@ db.init_app(app)
 @app.route('/')
 def index():
     # Fetch all claims created in the last 7 days
-    seven_days_ago = datetime.now(pacific_timezone).date() - timedelta(days=7)
+    seven_days_ago = datetime.now(pacific_timezone).date() - timedelta(days=6)
     recent_claims = (
         Claim.query
         .filter(Claim.completed_at > seven_days_ago)
