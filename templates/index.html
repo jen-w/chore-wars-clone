@@ -36,7 +36,7 @@
             {% for claim in claims %}
                 <tr>
                     <td>{{ chore_dict[claim.chore_id] }}</td>
-                    <td>{{ claim.completed_at.strftime('%a') }}</td>
+                    <td>{{ claim.completed_at.strftime('%a %-I:%M%p').lower() }}</td>
                     <td>{{ claim.completed_by }}</td>
                     <td>{{ claim.value }}</td>
                     <td>

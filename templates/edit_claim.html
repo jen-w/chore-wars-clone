@@ -22,10 +22,10 @@
             <input type="number" id="value" name="value" value="{{ claim.value }}" required />
     
             <label for="completed_at">completed at</label>
-            <input type="date" 
+            <input type="datetime-local" 
                    id="completed_at" 
                    name="completed_at" 
-                   value="{{ claim.completed_at.strftime('%Y-%m-%d') }}"
+                   value="{{ claim.completed_at.strftime('%Y-%m-%dT%H:%M') }}"
                    min="{{ completed_at_min }}"
                    max="{{ completed_at_max }}"
                    required />

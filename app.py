@@ -16,11 +16,11 @@ db.init_app(app)
 @app.route('/')
 def index():
     # Fetch all claims created in the last 7 days
-    seven_days_ago = datetime.now(pacific_timezone) - timedelta(days=7)
+    seven_days_ago = datetime.now(pacific_timezone).date() - timedelta(days=7)
     recent_claims = (
         Claim.query
         .filter(Claim.completed_at > seven_days_ago)
-        .order_by(Claim.completed_at.desc(), Claim.created_at.desc())
+        .order_by(Claim.completed_at.desc())
         .all()
     )
 
@@ -88,7 +88,7 @@ def edit_claim(id):
             claim.value = request.form['value']
             claim.completed_by = request.form['completed_by']
             claim.completed_at = datetime.strptime(
-                request.form['completed_at'], "%Y-%m-%d"
+                request.form['completed_at'], "%Y-%m-%dT%H:%M"
             )
             claim.note = request.form['note']
             claim.updated_at = datetime.now(pacific_timezone)
