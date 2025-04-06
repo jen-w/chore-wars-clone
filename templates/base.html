@@ -17,17 +17,20 @@
             <a href="{{ url_for('chores') }}">chores</a>
         </span>
 
-        <form action="{{ url_for('create_claim') }}" method="POST" class="claim_box">
-            <select name="chore_id" required>
+        <form name="choreForm" action="{{ url_for('create_claim') }}" method="POST">
+            <select name="completed_by" required>
+                {% for user in users %}
+                    <option value="{{ user }}"{% if whoami == user %} selected{% endif %}>
+                        {{ user }}
+                    </option>
+                {% endfor %}
+            </select>
+            <select name="chore_id" required onchange="document.choreForm.submit();">
                 <option value="" disabled selected>select a chore</option>
                 {% for chore in chores %}
                     <option value="{{ chore.id }}">{{ chore.name }} - {{ chore.value }} patacas</option>
                 {% endfor %}
             </select>
-
-            {% for user in users %}
-                <button name="completed_by" value="{{ user }}" type="submit">{{ user }}</button>
-            {% endfor %}
         </form>
     </nav>
 

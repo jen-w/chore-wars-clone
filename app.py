@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from models import db, Chore, Claim
 from datetime import datetime, timedelta
 from pytz import timezone
@@ -54,6 +54,9 @@ def create_claim():
     chore_id = request.form['chore_id']
     completed_by = request.form['completed_by']
     chore = Chore.query.get(chore_id)
+
+    # Remember who dun it for next claim
+    session["whoami"] = completed_by
 
     # Create a new claim
     new_claim = Claim(
@@ -155,7 +158,8 @@ def edit_chore(id):
 def populate_common_template_data():
     return {
         'chores': fetch_chores(),
-        'users': ['jenny', 'zep']
+        'users': ['jenny', 'zep'],
+        'whoami': session.get("whoami")
     }
 
 def fetch_chores():

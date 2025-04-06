@@ -60,9 +60,14 @@ nav a {
 }
 
 nav form {
-  border: 1px outset #bbbbbb;
-  background-color: #444;
-  padding: 4px;
+    display: flex;
+    border: 1px outset #bbbbbb;
+    background-color: #444;
+    padding: 4px;
+}
+
+nav form select:last-child {
+    width: 7rem;
 }
 
 main form {
