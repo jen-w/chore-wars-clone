@@ -158,7 +158,7 @@ def edit_chore(id):
 def populate_common_template_data():
     return {
         'chores': fetch_chores(),
-        'users': ['jenny', 'zep'],
+        'users': ['zep', 'jenny'],
         'whoami': session.get("whoami")
     }
 
