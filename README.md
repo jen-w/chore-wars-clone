@@ -1,13 +1,37 @@
-# GitHub Codespaces ♥️ Flask
-
-Welcome to your shiny new Codespace running Flask! We've got everything fired up and running for you to explore Flask.
-
-You've got a blank canvas to work on from a git perspective as well. There's a single initial commit with the what you're seeing right now - where you go from here is up to you!
-
-Everything you do here is contained within this one codespace. There is no repository on GitHub yet. If and when you’re ready you can click "Publish Branch" and we’ll create your repository and push up your project. If you were just exploring then and have no further need for this code then you can simply delete your codespace and it's gone forever.
+# Chore wars: the clone wars runbook
 
 To run this application:
-
 ```
 flask --debug run
+```
+
+## Deploy
+```
+ssh chorebot@192.168.1.[ending ip number] '/home/chorebot/code/chore-wars-clone/upgrade.sh'
+```
+## Troubleshooting
+After unplugging and plugging router back in, the site was down. The IP mapping was retained, but docker daemon needed to be started (`sudo service docker start`) and clock resynced (`rc-service ntpd start`). Then, I ran the upgrade script to restart the container.
+
+## Database
+### Bulk update rows
+
+I had to download sqlite3 cli: `sudo apk add sqlite sqlite-libs`.
+
+Launch the cli with: `sudo sqlite3 /var/chore-wars-db-instance/database.db` and run commands like this:  `UPDATE claim SET chore_id = 9 WHERE chore_id = 2;`
+### Plug and play queries
+#### Total claim count by chore for each user.
+```
+SELECT 
+    c.chore_id,
+    ch.name AS chore_name,
+    c.completed_by,
+    COUNT(*) AS total_claims
+FROM claim c
+JOIN chore ch ON c.chore_id = ch.id
+-- by year
+-- WHERE strftime('%Y', c.completed_at) = '2025'
+-- last 30 days
+-- WHERE date(c.completed_at) >= date('now', '-30 day') 
+GROUP BY c.chore_id, ch.name, c.completed_by
+ORDER BY c.chore_id, c.completed_by;
 ```
